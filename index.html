@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Buildpack-elixir by xyrox2</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/xyrox2/buildpack-elixir">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Buildpack-elixir</h1>
+            <h2></h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/xyrox2/buildpack-elixir/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/xyrox2/buildpack-elixir/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>
+<a id="bluemix-and-heroku-buildpack-for-elixir" class="anchor" href="#bluemix-and-heroku-buildpack-for-elixir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bluemix and Heroku Buildpack for Elixir</h1>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>
+<strong>Easy configuration</strong> with <code>elixir_buildpack.config</code> file</li>
+<li>Use <strong>prebuilt Elixir binaries</strong>
+</li>
+<li>
+<code>DATABASE_URL</code> can be made available at compile time adding it to <code>config_vars_to_export</code> in <code>elixir_buildpack.config</code>
+</li>
+<li>Allows configuring Erlang</li>
+<li>If your app doesn't have a Procfile, default web task <code>mix run --no-halt</code> will be run.</li>
+<li>Consolidates protocols</li>
+<li>Hex and rebar support</li>
+<li>Caching of Hex packages, Mix dependencies and downloads</li>
+<li>Pre &amp; Post compilation hooks through <code>pre_compile</code>, <code>post_compile</code> configuration</li>
+</ul>
+
+<h4>
+<a id="version-support" class="anchor" href="#version-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Version support</h4>
+
+<ul>
+<li>Erlang - Prebuilt packages (17.5, 17.4, etc)</li>
+<li>Elixir - Prebuilt releases (1.0.4, 1.0.3, etc) or prebuilt branches (master, stable, etc)</li>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h4>
+<a id="create-a-bluemix-app-with-this-buildpack" class="anchor" href="#create-a-bluemix-app-with-this-buildpack" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create a Bluemix app with this buildpack</h4>
+
+<p>cf login -a "Bluemix Endpoint e.g.<a href="https://api.ng.bluemix.net">https://api.ng.bluemix.net</a> &gt; US"</p>
+
+<p>cf push $APP_NAME -b <a href="https://github.com/xyrox2/buildpack-elixir.git">https://github.com/xyrox2/buildpack-elixir.git</a></p>
+
+<p>voila</p>
+
+<h4>
+<a id="create-a-heroku-app-with-this-buildpack" class="anchor" href="#create-a-heroku-app-with-this-buildpack" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create a Heroku app with this buildpack</h4>
+
+<pre><code>heroku create --buildpack "https://github.com/xyrox2/buildpack-elixir.git"
+</code></pre>
+
+<p>The above method always uses the latest version of the buildpack. To use a specific older version of the buildpack, <a href="#using-older-version-of-buildpack">see notes below</a>.</p>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>Create a <code>elixir_buildpack.config</code> file in your app's root dir. The file's syntax is bash.</p>
+
+<p>If you don't specify a config option, then the default option from the buildpack's <a href="https://github.com/xyrox2/buildpack-elixir/blob/master/elixir_buildpack.config"><code>elixir_buildpack.config</code></a> file will be used.</p>
+
+<p><strong>Here's a full config file with all available options:</strong></p>
+
+<pre><code># Erlang version
+erlang_version=18.2.1
+
+# Elixir version
+elixir_version=1.2.0
+
+# Always rebuild from scratch on every deploy?
+always_rebuild=false
+
+# Export heroku config vars
+config_vars_to_export=(DATABASE_URL)
+
+# A command to run right before compiling the app (after elixir, .etc)
+pre_compile="pwd"
+
+# A command to run right after compiling the app
+post_compile="pwd"
+
+# Set the path the app is run from
+runtime_path=/app
+</code></pre>
+
+<h4>
+<a id="specifying-elixir-version" class="anchor" href="#specifying-elixir-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Specifying Elixir version</h4>
+
+<ul>
+<li>Use prebuilt Elixir release</li>
+</ul>
+
+<pre><code>elixir_version=1.3.2
+</code></pre>
+
+<ul>
+<li>Use prebuilt Elixir branch, the <em>branch</em> specifier ensures that it will be downloaded every time</li>
+</ul>
+
+<pre><code>elixir_version=(branch master)
+</code></pre>
+
+<h4>
+<a id="specifying-erlang-version" class="anchor" href="#specifying-erlang-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Specifying Erlang version</h4>
+
+<ul>
+<li>You can specify an Erlang release version like below</li>
+</ul>
+
+<pre><code>erlang_version=19.0.2
+</code></pre>
+
+<h4>
+<a id="specifying-config-vars-to-export-at-compile-time" class="anchor" href="#specifying-config-vars-to-export-at-compile-time" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Specifying config vars to export at compile time</h4>
+
+<ul>
+<li>To set a config var on your heroku node you can exec from the shell:</li>
+</ul>
+
+<pre><code>heroku config:set MY_VAR=the_value
+</code></pre>
+
+<ul>
+<li>Add the config vars you want to be exported in your <code>elixir_buildpack.config</code> file:</li>
+</ul>
+
+<pre><code>config_vars_to_export=(DATABASE_URL MY_VAR)
+</code></pre>
+
+<h2>
+<a id="other-notes" class="anchor" href="#other-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other notes</h2>
+
+<ul>
+<li><p>Add your own <code>Procfile</code> to your application, else the default web task <code>mix run --no-halt</code> will be used.</p></li>
+<li>
+<p>Your application should build embedded and start permanent. Build embedded will consolidate protocols for a performance boost, start permanent will ensure that Heroku restarts your application if it crashes. See below for an example of how to use these features in your Mix project:</p>
+
+<div class="highlight highlight-source-elixir"><pre><span class="pl-k">defmodule</span> <span class="pl-en">MyApp</span>.<span class="pl-en">Mixfile</span> <span class="pl-k">do</span>
+  <span class="pl-k">use</span> <span class="pl-c1">Mix</span>.<span class="pl-c1">Project</span>
+
+  <span class="pl-k">def</span> <span class="pl-en">project</span> <span class="pl-k">do</span>
+    [<span class="pl-c1">app:</span> <span class="pl-c1">:my_app</span>,
+     <span class="pl-c1">version:</span> <span class="pl-s"><span class="pl-pds">"</span>0.0.1<span class="pl-pds">"</span></span>,
+     <span class="pl-c1">build_embedded:</span> <span class="pl-c1">Mix</span>.env <span class="pl-k">==</span> <span class="pl-c1">:prod</span>,
+     <span class="pl-c1">start_permanent:</span> <span class="pl-c1">Mix</span>.env <span class="pl-k">==</span> <span class="pl-c1">:prod</span>]
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
+</li>
+<li><p>The buildpack will execute the commands configured in <code>pre_compile</code> and/or <code>post_compile</code> in the root directory of your application before/after it has been compiled (respectively). These scripts can be used to build or prepare things for your application, for example compiling assets.</p></li>
+</ul>
+
+<h2>
+<a id="development" class="anchor" href="#development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development</h2>
+
+<ul>
+<li>Build scripts to build erlang are at <a href="https://github.com/HashNuke/heroku-buildpack-elixir-otp-builds">https://github.com/HashNuke/heroku-buildpack-elixir-otp-builds</a>
+</li>
+<li>Sample app to test is available at <a href="https://github.com/HashNuke/heroku-buildpack-elixir-test">https://github.com/HashNuke/heroku-buildpack-elixir-test</a>
+</li>
+</ul>
+
+<h2>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Credits</h2>
+
+<p>© Roman Lewin based on work of Akash Manohar under The MIT License. Feel free to do whatever you want with it.</p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/xyrox2">xyrox2</a> can be found on <a href="https://github.com/xyrox2/buildpack-elixir">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="https://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
