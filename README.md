@@ -31,13 +31,7 @@ voila
 #### Create a Heroku app with this buildpack
 
 ```
-heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.git"
-```
-
-#### Set the buildpack for an existing Heroku app
-
-```
-heroku buildpacks:set https://github.com/HashNuke/heroku-buildpack-elixir
+heroku create --buildpack "https://github.com/xyrox2/buildpack-elixir.git"
 ```
 
 The above method always uses the latest version of the buildpack. To use a specific older version of the buildpack, [see notes below](#using-older-version-of-buildpack).
@@ -46,7 +40,7 @@ The above method always uses the latest version of the buildpack. To use a speci
 
 Create a `elixir_buildpack.config` file in your app's root dir. The file's syntax is bash.
 
-If you don't specify a config option, then the default option from the buildpack's [`elixir_buildpack.config`](https://github.com/HashNuke/heroku-buildpack-elixir/blob/master/elixir_buildpack.config) file will be used.
+If you don't specify a config option, then the default option from the buildpack's [`elixir_buildpack.config`](https://github.com/xyrox2/buildpack-elixir/blob/master/elixir_buildpack.config) file will be used.
 
 
 __Here's a full config file with all available options:__
@@ -132,19 +126,6 @@ config_vars_to_export=(DATABASE_URL MY_VAR)
 
 * The buildpack will execute the commands configured in `pre_compile` and/or `post_compile` in the root directory of your application before/after it has been compiled (respectively). These scripts can be used to build or prepare things for your application, for example compiling assets.
 
-
-#### Using older version of buildpack
-
-Using the above methods always uses the latest version of the buildpack. We attempt to maintain the buildpack for as many old Elixir and Erlang releases as possible. But sometimes it does get hard since there's a matrix of 3 variables involved here (Erlang version, Elixir version and Heroku stack). If your application cannot be updated for some reason and requires an older version of the buildpack then use the [releases](https://github.com/HashNuke/heroku-buildpack-elixir/releases) page to pick a tag to use. Use the buildpack url with the tag name.
-
-For example, if you pick the tag "v3", then the buildpack url for your app would be:
-
-```
-https://github.com/HashNuke/heroku-buildpack-elixir.git#v3
-```
-
-We only create a new tag/release when we've made breaking changes. So consider all tagged versions older than master as not recommended for use and not supported any further.
-
 ## Development
 
 * Build scripts to build erlang are at <https://github.com/HashNuke/heroku-buildpack-elixir-otp-builds>
@@ -153,4 +134,4 @@ We only create a new tag/release when we've made breaking changes. So consider a
 
 ## Credits
 
-&copy; Akash Manohar under The MIT License. Feel free to do whatever you want with it.
+&copy; Roman Lewin based on work of Akash Manohar under The MIT License. Feel free to do whatever you want with it.
